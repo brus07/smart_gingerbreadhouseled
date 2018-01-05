@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body, h1, settings, go {
+	font-family: Helvetica;
+}
+settings {
+    border: none;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0.5% 0.5%;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+	background-color: #4CAF50;
+    color: white;
+    border: 2px solid #4CAF50;
+    width: 250px;
+}
+
+settings:hover {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #4CAF50;
+}
+
+go {
+    border: none;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0.5% 0.5%;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+	background-color: #bb0000;
+    color: white;
+    border: 2px solid #bb0000;
+    width: 250px;
+}
+
+go:hover {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #bb0000;
+{
+</style>
+
+</head>
+<body>
+<h1  align="center">Smart Led Ring</h1>
+<div align="center">
+<settings onclick="fetch('http://192.168.31.51/demo?state=demo');">Demo</settings>
+<settings onclick="fetch('http://192.168.31.51/demo?state=scanner');">Scanner</settings>
+<settings onclick="fetch('http://192.168.31.51/demo?state=rainbow');">Rainbow</settings>
+<settings onclick="fetch('http://192.168.31.51/demo?state=theater');">Theater</settings>
+<settings onclick="fetch('http://192.168.31.51/demo?state=colorwipe');">ColorWipe</settings>
+<settings onclick="fetch('http://192.168.31.51/demo?state=fade');">Fade</settings>
+<br/>
+<go>GO</go>
+
+</div>
+</body>
+</html>

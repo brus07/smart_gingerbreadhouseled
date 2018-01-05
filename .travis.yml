@@ -1,0 +1,17 @@
+language: c
+sudo: false
+before_install:
+  - source <(curl -SLs https://raw.githubusercontent.com/bakercp/travis-ci-arduino/master/install.sh)
+install:
+  - arduino --install-library "WiFiManager,arduino-fsm,WebSockets,Adafruit NeoPixel"
+script:
+  - wget https://github.com/Links2004/arduinoWebSockets/archive/2.0.9.tar.gz
+  - tar xf 2.0.9.tar.gz
+  - mv arduinoWebSockets-2.0.9 $HOME/arduino_ide/libraries/arduinoWebSockets-2.0.9
+  
+  - build_platform esp8266
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+    

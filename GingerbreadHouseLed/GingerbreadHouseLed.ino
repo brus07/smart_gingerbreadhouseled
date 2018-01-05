@@ -1,7 +1,6 @@
 #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
 
 //needed for library
-#include <DNSServer.h>
 #include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
 void ConnectToWiFi();
 
@@ -231,13 +230,11 @@ void onEnterFade()
 }
 void FadeComplete()
 {
-  if (circleIndex < 10)
-  {
-    Ring.Color1 = Ring.Color2;
-    Ring.Color2 = Ring.Wheel(random(255));
-    circleIndex++;
-  }
-  else
+  Ring.Color1 = Ring.Color2;
+  Ring.Color2 = Ring.Wheel(random(255));
+  circleIndex++;
+
+  if (circleIndex >= 10)
   {
     fsm.trigger(NEXT_DEMO_EVENT);
   }

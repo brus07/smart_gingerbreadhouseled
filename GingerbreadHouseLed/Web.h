@@ -84,7 +84,6 @@ class WebSite
       }
       if (server.hasArg("speed"))
       {
-        Serial.println("  speed: "+server.arg("speed"));
         int speedX = ToInt(server.arg("speed"));
         Serial.print("  speed: ");
         Serial.println(speedX);

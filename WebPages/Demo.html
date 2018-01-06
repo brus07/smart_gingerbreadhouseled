@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script language="javascript" type="text/javascript" src=https://code.jquery.com/jquery-2.1.4.min.js></script>
+<script language="javascript" type="text/javascript" src=https://code.jquery.com/jquery-2.1.4.min.js></script>
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script language="javascript" type="text/javascript" src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 <style>
 body, h1, settings, go {
 	font-family: Helvetica;
@@ -75,6 +79,12 @@ function mouseOverColor(msg )
 }
 function mouseOutMap( )
 {
+}
+
+function sendSpeed()
+{
+	var speed = parseInt(document.getElementById('slider-speed').value).toString(10);
+	fetch('http://192.168.31.51/demo?speed='+speed.toString());
 }
 </script>
 
@@ -222,7 +232,9 @@ function mouseOutMap( )
     <settings onclick="fetch('http://192.168.31.51/demo?state=colorwipe');">ColorWipe</settings>
     <settings onclick="fetch('http://192.168.31.51/demo?state=fade');">Fade</settings>
     <br/>
-    <go>GO</go>
+
+    <h2 for="slider-1">Speed:</h2>
+    <input type="range" name="slider-speed" id="slider-speed" min="1" max="20" value="10" onchange="sendSpeed();">
 </div>
 </body>
 </html>

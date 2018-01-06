@@ -150,11 +150,10 @@ void onEnterRainbowCycle()
 }
 void RainbowCycleComplete()
 {
-  if (circleIndex < 5)
-  {
-    circleIndex++;
-  }
-  else
+  Ring.Interval = 2*mediator.GetSpeed();
+
+  circleIndex++;
+  if (circleIndex >= 5)
   {
     fsm.trigger(NEXT_DEMO_EVENT);
   }
@@ -177,7 +176,7 @@ void onEnterTheaterChase()
 void TheaterChaseComplete()
 {
   uint32_t color1 = Ring.Wheel(random(255));
-  uint32_t color2 = Ring.Wheel(random(255));
+  uint32_t color2 = Ring.Wheel(random(255));  
   if (mediator.HasColor())
   {
       color1 = mediator.GetColor();
@@ -185,8 +184,10 @@ void TheaterChaseComplete()
   }
   Ring.Color1 = color1;
   Ring.Color2 = color2;
+  
+  Ring.Interval = 10*mediator.GetSpeed();
+  
   circleIndex++;
-
   if (circleIndex >= 20)
   {
     fsm.trigger(NEXT_DEMO_EVENT);
@@ -214,8 +215,10 @@ void ColorWipeComplete()
       color = mediator.GetColor();
   }
   Ring.Color1 = color;
+  
+  Ring.Interval = 5*mediator.GetSpeed();
+  
   circleIndex++;
-
   if (circleIndex >= 20)
   {
     fsm.trigger(NEXT_DEMO_EVENT);
@@ -234,12 +237,14 @@ void onEnterScanner()
 }
 void ScannerComplete()
 {
-
-    uint32_t color = Ring.Wheel(random(255));
-    if (mediator.HasColor())
-      color = mediator.GetColor();
-    Ring.Color1 = color;
-    circleIndex++;
+  uint32_t color = Ring.Wheel(random(255));
+  if (mediator.HasColor())
+    color = mediator.GetColor();
+  Ring.Color1 = color;
+  
+  Ring.Interval = 5*mediator.GetSpeed();
+  
+  circleIndex++;
   if (circleIndex >= 10)
   {
     fsm.trigger(NEXT_DEMO_EVENT);
@@ -283,8 +288,10 @@ void FadeComplete()
   }
   Ring.Color1 = color1;
   Ring.Color2 = color2;
+  
+  Ring.Interval = 5*mediator.GetSpeed();
+  
   circleIndex++;
-
   if (circleIndex >= 10)
   {
     fsm.trigger(NEXT_DEMO_EVENT);

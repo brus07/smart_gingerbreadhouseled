@@ -38,7 +38,8 @@ Mediator mediator(&fsm);
 #include "Web.h"
 WebSite site(80, &mediator);
 
-void setup() {
+void setup()
+{
   
     // put your setup code here, to run once:
     Serial.begin(115200);
@@ -124,11 +125,14 @@ void setup() {
     
     //fsm.add_transition(&StateScanner, &StateFade, NEXT_DEMO_EVENT, NULL);
     //fsm.add_transition(&StateFade, &StateScanner, NEXT_DEMO_EVENT, NULL);
+
+    fsm.run_machine();
+
+    mediator.Begin();
 }
 
-void loop() {
-    // put your main code here, to run repeatedly:
-    
+void loop()
+{
     site.HandleClient();
     
     MyWebSocketLoop();

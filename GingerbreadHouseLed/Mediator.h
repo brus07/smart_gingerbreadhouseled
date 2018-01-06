@@ -71,6 +71,8 @@ class Mediator
       Serial.println(m_speed);
       Serial.print("  state:");
       Serial.println(restoredState);
+      Serial.print("  hascolor:");
+      Serial.println(hasColor);
       Serial.print("  color:");
       Serial.println(m_color);
       

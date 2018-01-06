@@ -23,6 +23,7 @@ class Mediator
   private:
   Fsm *m_fsm;
   uint32_t m_color = -1;
+  int m_speed = 10;
   public:
     Mediator(Fsm *fsm): m_fsm(fsm)
     {
@@ -40,6 +41,13 @@ class Mediator
       {
         m_color = -1;
       }
+    }
+
+    void ChangeSpeed(int speed)
+    {
+      if (speed <= 0)
+        return;
+      m_speed = speed;
     }
 
     void ChangeState(String state)
@@ -82,6 +90,11 @@ class Mediator
     uint32_t GetColor()
     {
       return m_color;
+    }
+
+    int GetSpeed()
+    {
+      return m_speed;
     }
     
   private:

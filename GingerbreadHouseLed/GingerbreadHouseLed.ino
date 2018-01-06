@@ -146,7 +146,7 @@ void onEnterRainbowCycle()
   Serial.println("Started: RainbowCycle");
   circleIndex = 0;
   Ring.OnComplete = &RainbowCycleComplete;
-  Ring.RainbowCycle(20);
+  Ring.RainbowCycle(2*mediator.GetSpeed());
 }
 void RainbowCycleComplete()
 {
@@ -172,7 +172,7 @@ void onEnterTheaterChase()
       color1 = mediator.GetColor();
       color2 = 0;
   }
-  Ring.TheaterChase(color1, color2, 100);
+  Ring.TheaterChase(color1, color2, 10*mediator.GetSpeed());
 }
 void TheaterChaseComplete()
 {
@@ -201,7 +201,7 @@ void onEnterColorWipe()
   uint32_t color = Ring.Wheel(random(255));
   if (mediator.HasColor())
     color = mediator.GetColor();
-  Ring.ColorWipe(color, 55);
+  Ring.ColorWipe(color, 5*mediator.GetSpeed());
 }
 void ColorWipeComplete()
 {
@@ -230,7 +230,7 @@ void onEnterScanner()
   uint32_t color = Ring.Wheel(random(255));
   if (mediator.HasColor())
     color = mediator.GetColor();
-  Ring.Scanner(color, 55);
+  Ring.Scanner(color, 5*mediator.GetSpeed());
 }
 void ScannerComplete()
 {
@@ -258,7 +258,7 @@ void onEnterFade()
       color1 = mediator.GetColor();
       color2 = 0;
   }
-  Ring.Fade(color1, color2, 50, 55);
+  Ring.Fade(color1, color2, 50, 5*mediator.GetSpeed());
 }
 void FadeComplete()
 {

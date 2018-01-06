@@ -82,6 +82,15 @@ class WebSite
         m_mediator->ChangeState(server.arg("state"));
         receivedArgs = true;
       }
+      if (server.hasArg("speed"))
+      {
+        Serial.println("  speed: "+server.arg("speed"));
+        int speedX = ToInt(server.arg("speed"));
+        Serial.print("  speed: ");
+        Serial.println(speedX);
+        m_mediator->ChangeSpeed(speedX);
+        receivedArgs = true;
+      }
       
       if (!receivedArgs)
       {
@@ -102,6 +111,19 @@ class WebSite
         message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
       }
       server.send(404, "text/plain", message);
+    }
+
+    private:
+
+    int ToInt(String s)
+    {
+      int res = 0;
+      for (int i=0; i<s.length(); i++)
+      {
+        res *= 10;
+        res += s[i]-'0';
+      }
+      return res;
     }
 };
 

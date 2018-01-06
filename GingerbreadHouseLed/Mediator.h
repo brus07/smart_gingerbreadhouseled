@@ -22,16 +22,31 @@ class Mediator
 {
   private:
   Fsm *m_fsm;
+  uint32_t m_color = -1;
   public:
     Mediator(Fsm *fsm): m_fsm(fsm)
     {
       
     }
 
+    void SetColor(String hex)
+    {
+      if(hex[0] == 'c')
+      {
+        uint32_t rgb = (uint32_t) strtol((const char *) &hex[1], NULL, 16);
+        m_color = Color(((rgb >> 16) & 0xFF), ((rgb >> 8) & 0xFF),((rgb >> 0) & 0xFF));
+      }
+      else
+      {
+        m_color = -1;
+      }
+    }
+
     void ChangeState(String state)
     {
       if (state == "demo")
       {
+        SetColor("");
         m_fsm->trigger(TO_DEMO_EVENT);
       }
       else if (state == "scanner")
@@ -58,6 +73,21 @@ class Mediator
       {
         
       }
+    }
+
+    bool HasColor()
+    {
+      return m_color != -1;
+    }
+    uint32_t GetColor()
+    {
+      return m_color;
+    }
+    
+  private:
+    uint32_t Color(uint8_t r, uint8_t g, uint8_t b)
+    {
+      return ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
     }
 };
 

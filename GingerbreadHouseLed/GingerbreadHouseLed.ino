@@ -165,17 +165,29 @@ void onEnterTheaterChase()
   Serial.println("Started: TheaterChase");
   circleIndex = 0;
   Ring.OnComplete = &TheaterChaseComplete;
-  Ring.TheaterChase(Ring.Wheel(random(255)), Ring.Wheel(random(255)), 100);
+  uint32_t color1 = Ring.Wheel(random(255));
+  uint32_t color2 = Ring.Wheel(random(255));
+  if (mediator.HasColor())
+  {
+      color1 = mediator.GetColor();
+      color2 = 0;
+  }
+  Ring.TheaterChase(color1, color2, 100);
 }
 void TheaterChaseComplete()
 {
-  if (circleIndex < 20)
+  uint32_t color1 = Ring.Wheel(random(255));
+  uint32_t color2 = Ring.Wheel(random(255));
+  if (mediator.HasColor())
   {
-    Ring.Color1 = Ring.Wheel(random(255));
-    Ring.Color2 = Ring.Wheel(random(255));
-    circleIndex++;
+      color1 = mediator.GetColor();
+      color2 = 0;
   }
-  else
+  Ring.Color1 = color1;
+  Ring.Color2 = color2;
+  circleIndex++;
+
+  if (circleIndex >= 20)
   {
     fsm.trigger(NEXT_DEMO_EVENT);
   }
@@ -186,16 +198,25 @@ void onEnterColorWipe()
   Serial.println("Started: ColorWipe");
   circleIndex = 0;
   Ring.OnComplete = &ColorWipeComplete;
-  Ring.ColorWipe(Ring.Wheel(random(255)), 55);
+  uint32_t color = Ring.Wheel(random(255));
+  if (mediator.HasColor())
+    color = mediator.GetColor();
+  Ring.ColorWipe(color, 55);
 }
 void ColorWipeComplete()
 {
-  if (circleIndex < 20)
+  uint32_t color = Ring.Wheel(random(255));
+  if (mediator.HasColor())
   {
-    Ring.Color1 = Ring.Wheel(random(255));
-    circleIndex++;
+    if (Ring.Color1 == mediator.GetColor())
+      color = 0;
+    else
+      color = mediator.GetColor();
   }
-  else
+  Ring.Color1 = color;
+  circleIndex++;
+
+  if (circleIndex >= 20)
   {
     fsm.trigger(NEXT_DEMO_EVENT);
   }
@@ -206,16 +227,20 @@ void onEnterScanner()
   Serial.println("Started: Scanner");
   circleIndex = 0;
   Ring.OnComplete = &ScannerComplete;
-  Ring.Scanner(Ring.Color(255,0,0), 55);
+  uint32_t color = Ring.Wheel(random(255));
+  if (mediator.HasColor())
+    color = mediator.GetColor();
+  Ring.Scanner(color, 55);
 }
 void ScannerComplete()
 {
-  if (circleIndex < 10)
-  {
-    Ring.Color1 = Ring.Wheel(random(255));
+
+    uint32_t color = Ring.Wheel(random(255));
+    if (mediator.HasColor())
+      color = mediator.GetColor();
+    Ring.Color1 = color;
     circleIndex++;
-  }
-  else
+  if (circleIndex >= 10)
   {
     fsm.trigger(NEXT_DEMO_EVENT);
   }
@@ -226,12 +251,38 @@ void onEnterFade()
   Serial.println("Started: Fade");
   circleIndex = 0;
   Ring.OnComplete = &FadeComplete;
-  Ring.Fade(Ring.Color(255,0,0), Ring.Color(255,0,0), 50, 55);
+  uint32_t color1 = Ring.Wheel(random(255));
+  uint32_t color2 = Ring.Wheel(random(255));
+  if (mediator.HasColor())
+  {
+      color1 = mediator.GetColor();
+      color2 = 0;
+  }
+  Ring.Fade(color1, color2, 50, 55);
 }
 void FadeComplete()
 {
-  Ring.Color1 = Ring.Color2;
-  Ring.Color2 = Ring.Wheel(random(255));
+  uint32_t color1 = Ring.Color2;
+  uint32_t color2 = Ring.Wheel(random(255));
+  if (mediator.HasColor())
+  {
+    if (Ring.Color1 == mediator.GetColor())
+    {
+      color1 = 0;
+      color2 = mediator.GetColor();
+    }
+    else if(Ring.Color2 == mediator.GetColor())
+    {
+      color1 = mediator.GetColor();
+      color2 = 0;
+    }
+    else
+    {
+      color2 = mediator.GetColor();
+    }
+  }
+  Ring.Color1 = color1;
+  Ring.Color2 = color2;
   circleIndex++;
 
   if (circleIndex >= 10)

@@ -69,11 +69,21 @@ class WebSite
     void handleDemo() {
       Serial.println("Requested: /demo");
       server.send(200, "text/plain", "Ok!");
+      bool receivedArgs = false;
+      if (server.hasArg("color"))
+      {
+        Serial.println("  color: "+server.arg("color"));
+        m_mediator->SetColor(server.arg("color"));
+        receivedArgs = true;
+      }
       if (server.hasArg("state"))
       {
-          m_mediator->ChangeState(server.arg("state"));
+        Serial.println("  state: "+server.arg("state"));
+        m_mediator->ChangeState(server.arg("state"));
+        receivedArgs = true;
       }
-      else
+      
+      if (!receivedArgs)
       {
         m_mediator->ChangeState("demo");
       }

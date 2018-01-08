@@ -249,6 +249,12 @@ class NeoPatterns : public Adafruit_NeoPixel
         show();
         Increment();
     }
+
+    void SetPixel(int id, uint32_t color)
+    {
+      setPixelColor(id, color);
+      show();
+    }
     
     // Calculate 50% dimmed version of a color (used by ScannerUpdate)
     uint32_t DimColor(uint32_t color)
@@ -308,4 +314,5 @@ class NeoPatterns : public Adafruit_NeoPixel
     }
 };
 
-#endif
+#endif /* NeoPatterns_h */
+

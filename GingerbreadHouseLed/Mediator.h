@@ -26,6 +26,8 @@
 #define EEPROM_COLOR_G_ADDR 77
 #define EEPROM_COLOR_B_ADDR 78
 
+#define SOCKET_EVENT 201
+
 class Mediator
 {
   private:
@@ -34,6 +36,10 @@ class Mediator
   int m_speed = 10;
 
   int restoredState = -1;
+  
+  uint32_t m_pixelColor = -1;
+  int pixelIndex = -1;
+  
   public:
     Mediator(Fsm *fsm): m_fsm(fsm)
     {
@@ -166,6 +172,22 @@ class Mediator
     {
       return m_speed;
     }
+
+    void SetPixel(int pixelId, int r, int g, int b)
+    {
+      m_pixelColor = Color(r,g,b);
+      pixelIndex = pixelId;
+      m_fsm->trigger(SOCKET_EVENT);
+    }
+
+    int GetPixelId()
+    {
+      return pixelIndex;
+    }
+    uint32_t GetPixelColor()
+    {
+      return m_pixelColor;
+    }
     
   private:
     static uint32_t Color(uint8_t r, uint8_t g, uint8_t b)
@@ -180,4 +202,5 @@ class Mediator
     }
 };
 
-#endif
+#endif /* Mediator_h */
+

@@ -126,4 +126,5 @@ class WebSite
     }
 };
 
-#endif WEB_H
+#endif /* WEB_H */
+

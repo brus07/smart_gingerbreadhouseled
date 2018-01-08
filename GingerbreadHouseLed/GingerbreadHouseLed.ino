@@ -6,8 +6,6 @@ void ConnectToWiFi();
 
 #include "Mediator.h"
 
-#include "MyWebSocketsServer.h"
-
 #include "NeoPatterns.h"
 void ScannerComplete();
 NeoPatterns Ring(12, 3, NEO_GRB + NEO_KHZ800, &ScannerComplete);
@@ -18,6 +16,7 @@ void onEnterRainbowCycle();
 void onEnterTheaterChase();
 void onEnterColorWipe();
 void onEnterFade();
+void onEnterSocket();
 State StateScanner(onEnterScanner, NULL, NULL);
 State StateRainbowCycle(onEnterRainbowCycle, NULL, NULL);
 State StateTheaterChase(onEnterTheaterChase, NULL, NULL);
@@ -30,6 +29,8 @@ State StateTheaterChaseLoop(onEnterTheaterChase, NULL, NULL);
 State StateColorWipeLoop(onEnterColorWipe, NULL, NULL);
 State StateFadeLoop(onEnterFade, NULL, NULL);
 
+State StateSocket(onEnterSocket, NULL, NULL);
+
 
 Fsm fsm(&StateScanner);
 
@@ -37,6 +38,9 @@ Mediator mediator(&fsm);
 
 #include "Web.h"
 WebSite site(80, &mediator);
+
+#include "MyWebSocketsServer.h"
+MyWebSockerServer socket(81, &mediator);
 
 void setup()
 {
@@ -56,7 +60,7 @@ void setup()
     Serial.flush();
 
 
-    MyWebSocketSetup();
+    socket.Setup();
 
     Ring.begin();
     Ring.Scanner(Ring.Color(255,0,0), 55);
@@ -122,6 +126,24 @@ void setup()
     fsm.add_transition(&StateTheaterChaseLoop, &StateScanner, TO_DEMO_EVENT, NULL);
     fsm.add_transition(&StateColorWipeLoop, &StateScanner, TO_DEMO_EVENT, NULL);
     fsm.add_transition(&StateFadeLoop, &StateScanner, TO_DEMO_EVENT, NULL);
+
+    fsm.add_transition(&StateSocket, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateScanner, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateRainbowCycle, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateTheaterChase, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateColorWipe, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateFade, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateScannerLoop, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateRainbowCyclerLoop, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateTheaterChaseLoop, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateColorWipeLoop, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateFadeLoop, &StateSocket, SOCKET_EVENT, NULL);
+    fsm.add_transition(&StateSocket, &StateScanner, TO_DEMO_EVENT, NULL);
+    fsm.add_transition(&StateSocket, &StateScannerLoop, TO_SCANNER_LOOP_EVENT, NULL);
+    fsm.add_transition(&StateSocket, &StateRainbowCyclerLoop, TO_RAINBOW_LOOP_EVENT, NULL);
+    fsm.add_transition(&StateSocket, &StateTheaterChaseLoop, TO_THEATER_LOOP_EVENT, NULL);
+    fsm.add_transition(&StateSocket, &StateColorWipeLoop, TO_COLORWIPE_LOOP_EVENT, NULL);
+    fsm.add_transition(&StateSocket, &StateFadeLoop, TO_FADE_LOOP_EVENT, NULL);
     
     //fsm.add_transition(&StateScanner, &StateFade, NEXT_DEMO_EVENT, NULL);
     //fsm.add_transition(&StateFade, &StateScanner, NEXT_DEMO_EVENT, NULL);
@@ -135,7 +157,7 @@ void loop()
 {
     site.HandleClient();
     
-    MyWebSocketLoop();
+    socket.Loop();
 
     Ring.Update();
 
@@ -300,6 +322,16 @@ void FadeComplete()
   {
     fsm.trigger(NEXT_DEMO_EVENT);
   }
+}
+
+
+void onEnterSocket()
+{
+  //Serial.println("Started: Socket");
+  circleIndex = 0;
+  Ring.OnComplete = NULL;
+  Ring.ActivePattern = NONE;
+  Ring.SetPixel(mediator.GetPixelId(), mediator.GetPixelColor());
 }
 
 void ConnectToWiFi()

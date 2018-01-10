@@ -1,7 +1,8 @@
 <html>
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> 
-<script language="javascript" type="text/javascript" src=https://code.jquery.com/jquery-2.1.4.min.js></script>
+<script language="javascript" type="text/javascript" src=https://code.jquery.com/jquery-2.2.4.min.js></script>
+<script language="javascript" type="text/javascript" src=http://code.jquery.com/color/jquery.color-2.1.2.min.js></script>
 
 <script>
 
@@ -67,7 +68,71 @@ function IssueSystemMessage( msg )
 		background-color: #000000;
 	}
   </style>
+  
+  <script>
+  $( function() {
+	function hex(x) {
+		return ("0" + parseInt(x).toString(16)).slice(-2);
+	}
+	  function rgb2hex(rgb) {
+	   rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(,\s*\d+\.*\d+)?\)$/);
+	   return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+	}
+	
+	function setGlobalRGB()
+	{
+		for (i=0; i<12; i++)
+		{
+			setRGB(i,rgb2hex($("#led-"+i).css("background-color")));
+		}
+	}
+	
+    var prevColor = "#000000";
+	var curColor  = "#000000";
+    $( "#button" ).on( "click", function() {
+		if (document.getElementById('color').value != curColor)
+		{
+			prevColor = curColor;
+			curColor = document.getElementById('color').value;
+		}
+		else
+		{
+			curColor = prevColor;
+			prevColor = document.getElementById('color').value;
+		}
 
+		$( "#led-11" ).animate({
+				backgroundColor: curColor,
+			},
+			{
+				duration: 1000,
+				step: function( backgroundColor ){
+							setGlobalRGB();
+						}
+		});
+    });
+	
+	var curIndex  = 0;
+	var HasInterval = null;
+    $( "#buttonTrain" ).on( "click", function() {
+		if (HasInterval != null)
+		{
+			clearInterval(HasInterval);
+			HasInterval = null;
+		}
+		else
+		{
+			HasInterval = setInterval(function() {
+				sendRGBIndex(curIndex, document.getElementById('color').value);
+				curIndex++;
+				if (curIndex >= 12)
+					curIndex = 0;
+			}, 100);
+		}
+	});
+  } );
+  </script>
+  
 <script>
 	function setRGB(ind, col)
 	{
@@ -75,16 +140,19 @@ function IssueSystemMessage( msg )
 		var sendValue = 'i' + ind.toString();
 		connection.send(sendValue + col);
 	}
-	function sendRGB(){
-	  	var value = parseInt(document.getElementById('slider-1').value).toString(10);
-		setRGB(value, document.getElementById('color').value);
+	function sendRGBIndex(ind, col){
+		setRGB(ind, col);
 		for (i = 0; i < 12; i++)
 		{
-			if (i != value)
+			if (i != ind)
 			{
 				setRGB(i, "#000000");
 			}
 		}
+	}
+	function sendRGB(){
+	  	var value = parseInt(document.getElementById('slider-1').value).toString(10);
+		sendRGBIndex(value, document.getElementById('color').value);
 	}
 </script>
 
@@ -138,6 +206,9 @@ function IssueSystemMessage( msg )
 		<div style="width: 100%;"><input type="range" name="slider-1" id="slider-1" min="0" max="11" value="6" onchange="sendRGB();"></div>
 	  </div>
 	  <input style="width: 100%;" type="color" id="color" value="#ff0000">
+ 
+	  <button id="button" class="ui-state-default ui-corner-all">Toggle Effect</button>
+	  <button id="buttonTrain" class="ui-state-default ui-corner-all">Train</button>
 	</div>
 
 <div id=SystemMessage>...</div>

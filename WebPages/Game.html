@@ -23,7 +23,21 @@ function IssueSystemMessage( msg )
 </script>
 <meta charset="UTF-8">
 <script>
-	var connection = new WebSocket('ws://192.168.31.51:81/', ['arduino']);
+	function createUrl()
+	{
+		return "ws://"+getIp()+":81/";
+	}
+	function getIp()
+	{
+		var ip = localStorage.getItem("configip");
+		if (ip == null)
+		{
+			ip = prompt("Set ip (192.168.1.123)");
+			localStorage.setItem("configip", ip);
+		}
+		return ip;
+	}
+	var connection = new WebSocket(createUrl(), ['arduino']);
 	connection.onopen = function () {  connection.send('Connect ' + new Date()); }; 
 	connection.onerror = function (error) {    console.log('WebSocket Error ', error);};
 	connection.onmessage = function (e) {  

@@ -57,6 +57,20 @@ go:hover {
 </style>
 
 <script>
+function createUrl(tail)
+{
+	return "http://"+getIp()+"/"+tail;
+}
+function getIp()
+{
+	var ip = localStorage.getItem("configip");
+	if (ip == null)
+	{
+		ip = prompt("Set ip (192.168.1.123)");
+		localStorage.setItem("configip", ip);
+	}
+	return ip;
+}
 function replaceAt(string, index, replace) {
   return string.substring(0, index) + replace + string.substring(index + 1);
 }
@@ -64,14 +78,7 @@ function clickColor( hex, seltop, selleft )
 {
 	hex = replaceAt(hex, 0, "c");
 	console.log("Click:"+hex);
-/*
-	if ((seltop+200)>-1 && selleft>-1) {
-		document.getElementById("selectedhexagon").style.top=seltop-0 + "px";
-		document.getElementById("selectedhexagon").style.left=selleft + "px";
-		document.getElementById("selectedhexagon").style.visibility="visible";
-	}
-*/
-	fetch('http://192.168.31.51/demo?color='+hex);
+	fetch(createUrl('demo?color='+hex));
 }
 function mouseOverColor(msg )
 {
@@ -84,7 +91,11 @@ function mouseOutMap( )
 function sendSpeed()
 {
 	var speed = parseInt(document.getElementById('slider-speed').value).toString(10);
-	fetch('http://192.168.31.51/demo?speed='+speed.toString());
+	fetch(createUrl('demo?speed='+speed.toString()));
+}
+function changeState(state)
+{
+	fetch(createUrl('demo?state='+state.toString()));
 }
 </script>
 
@@ -225,12 +236,12 @@ function sendSpeed()
       <div id="selectedhexagon" style="visibility: hidden; position: relative; width: 21px; height: 21px; background-image: url(&quot;img_selectedcolor.gif&quot;); top: -200px; left: 54px;"></div>
 </div>
 <div align="center">
-    <settings onclick="fetch('http://192.168.31.51/demo?state=demo');">Demo</settings>
-    <settings onclick="fetch('http://192.168.31.51/demo?state=scanner');">Scanner</settings>
-    <settings onclick="fetch('http://192.168.31.51/demo?state=rainbow');">Rainbow</settings>
-    <settings onclick="fetch('http://192.168.31.51/demo?state=theater');">Theater</settings>
-    <settings onclick="fetch('http://192.168.31.51/demo?state=colorwipe');">ColorWipe</settings>
-    <settings onclick="fetch('http://192.168.31.51/demo?state=fade');">Fade</settings>
+    <settings onclick="changeState('demo');">Demo</settings>
+    <settings onclick="changeState('scanner');">Scanner</settings>
+    <settings onclick="changeState('rainbow');">Rainbow</settings>
+    <settings onclick="changeState('theater');">Theater</settings>
+    <settings onclick="changeState('colorwipe');">ColorWipe</settings>
+    <settings onclick="changeState('fade');">Fade</settings>
     <br/>
 
     <h2 for="slider-1">Speed:</h2>

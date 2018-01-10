@@ -30,7 +30,7 @@ function IssueSystemMessage( msg )
 	function getIp()
 	{
 		var ip = localStorage.getItem("configip");
-		if (ip == null)
+		if (ip == null || ip === null || ip == "null")
 		{
 			ip = prompt("Set ip (192.168.1.123)");
 			localStorage.setItem("configip", ip);
@@ -76,7 +76,7 @@ LED Control:<br/>
 <form>
 	<input type="color" id="color" value="#ff0000">
     <label for="slider-1">Slider:</label>
-    <input type="range" name="slider-1" id="slider-1" min="0" max="11" value="6" onchange="sendRGB();">
+    <div style="width: 90%;"><input type="range" name="slider-1" id="slider-1" min="0" max="11" value="6" onchange="sendRGB();"></div>
 </form>
 <div id=SystemMessage>...</div>
 </body>

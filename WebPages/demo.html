@@ -64,7 +64,7 @@ function createUrl(tail)
 function getIp()
 {
 	var ip = localStorage.getItem("configip");
-	if (ip == null)
+	if (ip == null || ip === null || ip == "null")
 	{
 		ip = prompt("Set ip (192.168.1.123)");
 		localStorage.setItem("configip", ip);
@@ -245,7 +245,7 @@ function changeState(state)
     <br/>
 
     <h2 for="slider-1">Speed:</h2>
-    <input type="range" name="slider-speed" id="slider-speed" min="1" max="20" value="10" onchange="sendSpeed();">
+    <div style="width: 90%;"><input type="range" name="slider-speed" id="slider-speed" min="1" max="20" value="10" onchange="sendSpeed();"></div>
 </div>
 </body>
 </html>

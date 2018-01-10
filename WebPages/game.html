@@ -23,7 +23,21 @@ function IssueSystemMessage( msg )
 </script>
 <meta charset="UTF-8">
 <script>
-	var connection = new WebSocket('ws://192.168.31.51:81/', ['arduino']);
+	function createUrl()
+	{
+		return "ws://"+getIp()+":81/";
+	}
+	function getIp()
+	{
+		var ip = localStorage.getItem("configip");
+		if (ip == null || ip === null || ip == "null")
+		{
+			ip = prompt("Set ip (192.168.1.123)");
+			localStorage.setItem("configip", ip);
+		}
+		return ip;
+	}
+	var connection = new WebSocket(createUrl(), ['arduino']);
 	connection.onopen = function () {  connection.send('Connect ' + new Date()); }; 
 	connection.onerror = function (error) {    console.log('WebSocket Error ', error);};
 	connection.onmessage = function (e) {  
@@ -62,7 +76,7 @@ LED Control:<br/>
 <form>
 	<input type="color" id="color" value="#ff0000">
     <label for="slider-1">Slider:</label>
-    <input type="range" name="slider-1" id="slider-1" min="0" max="11" value="6" onchange="sendRGB();">
+    <div style="width: 90%;"><input type="range" name="slider-1" id="slider-1" min="0" max="11" value="6" onchange="sendRGB();"></div>
 </form>
 <div id=SystemMessage>...</div>
 </body>

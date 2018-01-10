@@ -1,0 +1,69 @@
+<html>
+<head>
+<script language="javascript" type="text/javascript" src=https://code.jquery.com/jquery-2.1.4.min.js></script>
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script>
+
+    $(document).bind('mobileinit',function(){
+        $.mobile.pushStateEnabled = false;
+    });
+</script>
+<script language="javascript" type="text/javascript" src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script>
+var SystemMessageTimeout = null;
+function IssueSystemMessage( msg )
+{
+	var elem = $( "#SystemMessage" );
+	elem.hide();
+	elem.html(  "<font size=+2>" + msg + "</font>" );
+	elem.fadeIn( 'slow' );
+	if( SystemMessageTimeout != null ) clearTimeout(SystemMessageTimeout);
+	SystemMessageTimeout = setTimeout( function() { SystemMessageTimeout = null; $( "#SystemMessage" ).fadeOut( 'slow' ) }, 3000 );
+}
+</script>
+<meta charset="UTF-8">
+<script>
+	var connection = new WebSocket('ws://192.168.31.51:81/', ['arduino']);
+	connection.onopen = function () {  connection.send('Connect ' + new Date()); }; 
+	connection.onerror = function (error) {    console.log('WebSocket Error ', error);};
+	connection.onmessage = function (e) {  
+		console.log('Server: ', e.data);
+		IssueSystemMessage( "WebSocket Connected!" );
+	};
+	connection.onclose = function(e) {
+		console.log('Server: ', e.data);
+		IssueSystemMessage( "WebSocket Disconnected!" );
+	 };
+</script>
+
+<script>
+	function sendRGB(){
+	  	var value = parseInt(document.getElementById('slider-1').value).toString(10);
+		var sendValue = 'i' + value.toString();
+		connection.send(sendValue + document.getElementById('color').value);
+		for (i = 0; i < 12; i++) {
+			if (i != value) {
+				sendValue = 'i' + i.toString();
+				connection.send(sendValue + "#000000");
+			}
+		}
+	}
+</script>
+
+<style>
+.collapsible { display:none; }
+.inbutton { background-color:blue; }
+#SystemMessage { position: absolute; top: 5px; right: 5px; background-color: DarkSlateBlue; color: #ffffff; right: 5px; display:none; }
+</style>
+</head>
+<body>
+LED Control:<br/>
+<br/>
+<form>
+	<input type="color" id="color" value="#ff0000">
+    <label for="slider-1">Slider:</label>
+    <input type="range" name="slider-1" id="slider-1" min="0" max="11" value="6" onchange="sendRGB();">
+</form>
+<div id=SystemMessage>...</div>
+</body>
+</html>

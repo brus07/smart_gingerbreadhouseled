@@ -39,7 +39,11 @@ class Mediator
   
   uint32_t m_pixelColor = -1;
   int pixelIndex = -1;
-  
+
+  bool socketSelected = false;
+
+  public:
+    void (*OnSetPixel)();  // Callback on completion of pattern
   public:
     Mediator(Fsm *fsm): m_fsm(fsm)
     {
@@ -126,31 +130,37 @@ class Mediator
       {
         SetColor("");
         m_fsm->trigger(TO_DEMO_EVENT);
+        socketSelected = false;
         WriteToEeprom(EEPROM_STATE_ADDR, (byte)TO_DEMO_EVENT);
       }
       else if (state == "scanner")
       {
         m_fsm->trigger(TO_SCANNER_LOOP_EVENT);
+        socketSelected = false;
         WriteToEeprom(EEPROM_STATE_ADDR, (byte)TO_SCANNER_LOOP_EVENT);
       }
       else if (state == "rainbow")
       {
         m_fsm->trigger(TO_RAINBOW_LOOP_EVENT);
+        socketSelected = false;
         WriteToEeprom(EEPROM_STATE_ADDR, (byte)TO_RAINBOW_LOOP_EVENT);
       }
       else if (state == "theater")
       {
         m_fsm->trigger(TO_THEATER_LOOP_EVENT);
+        socketSelected = false;
         WriteToEeprom(EEPROM_STATE_ADDR, (byte)TO_THEATER_LOOP_EVENT);
       }
       else if (state == "colorwipe")
       {
         m_fsm->trigger(TO_COLORWIPE_LOOP_EVENT);
+        socketSelected = false;
         WriteToEeprom(EEPROM_STATE_ADDR, (byte)TO_COLORWIPE_LOOP_EVENT);
       }
       else if (state == "fade")
       {
         m_fsm->trigger(TO_FADE_LOOP_EVENT);
+        socketSelected = false;
         WriteToEeprom(EEPROM_STATE_ADDR, (byte)TO_FADE_LOOP_EVENT);      
       }
       else
@@ -177,7 +187,13 @@ class Mediator
     {
       m_pixelColor = Color(r,g,b);
       pixelIndex = pixelId;
-      m_fsm->trigger(SOCKET_EVENT);
+      if (!socketSelected)
+      {
+        m_fsm->trigger(SOCKET_EVENT);
+        socketSelected = true;
+      }
+      if (OnSetPixel != NULL)
+        OnSetPixel();
     }
 
     int GetPixelId()

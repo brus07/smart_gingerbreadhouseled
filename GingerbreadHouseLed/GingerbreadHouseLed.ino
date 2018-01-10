@@ -327,11 +327,15 @@ void FadeComplete()
 
 void onEnterSocket()
 {
-  //Serial.println("Started: Socket");
-  circleIndex = 0;
-  Ring.OnComplete = NULL;
-  Ring.ActivePattern = NONE;
-  Ring.SetPixel(mediator.GetPixelId(), mediator.GetPixelColor());
+  Serial.println("Started: Socket");
+  Ring.Socket(mediator.GetPixelId(), 10);
+  mediator.OnSetPixel = &SocketComplete;
+}
+void SocketComplete()
+{
+  Ring.Color1 = mediator.GetPixelColor();
+  Ring.Index = mediator.GetPixelId();
+  Ring.SocketUpdate();
 }
 
 void ConnectToWiFi()

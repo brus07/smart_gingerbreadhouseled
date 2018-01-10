@@ -52,7 +52,7 @@ class MyWebSockerServer
                   
                   // we get RGB data
                   // decode rgb data
-                  int colorIndex = 4;
+                  int colorIndex = 3;
                   if (pixelId >= 10)
                     colorIndex++;
                   uint32_t rgb = (uint32_t) strtol((const char *) &payload[colorIndex], NULL, 16);
@@ -79,13 +79,6 @@ class MyWebSockerServer
     void ReceivedRgbAndIndex(int index, int r, int g, int b)
     {
       m_mediator->SetPixel(index, r, g, b);
-    }
-    void ReceivedRgb(int r, int g, int b)
-    {
-      for (int i=0; i<12; i++)
-      {
-        ReceivedRgbAndIndex(r,g,b,i);
-      }
     }
   
 };

@@ -328,14 +328,12 @@ void FadeComplete()
 void onEnterSocket()
 {
   Serial.println("Started: Socket");
-  Ring.Socket(mediator.GetPixelId(), 10);
+  Ring.Socket();
   mediator.OnSetPixel = &SocketComplete;
 }
-void SocketComplete()
+void SocketComplete(int index, uint32_t color)
 {
-  Ring.Color1 = mediator.GetPixelColor();
-  Ring.Index = mediator.GetPixelId();
-  Ring.SocketUpdate();
+  Ring.SocketUpdate(index, color);
 }
 
 void ConnectToWiFi()
@@ -360,6 +358,7 @@ void ConnectToWiFi()
     {
         Serial.println("failed to connect, we should reset as see if it connects");
         delay(3000);
+        wifiManager.resetSettings();
         ESP.reset();
         delay(5000);
     }

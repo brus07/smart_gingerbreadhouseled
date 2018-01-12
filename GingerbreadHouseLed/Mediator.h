@@ -36,14 +36,11 @@ class Mediator
   int m_speed = 10;
 
   int restoredState = -1;
-  
-  uint32_t m_pixelColor = -1;
-  int pixelIndex = -1;
 
   bool socketSelected = false;
 
   public:
-    void (*OnSetPixel)();  // Callback on completion of pattern
+    void (*OnSetPixel)(int index, uint32_t color);  // Callback on completion of pattern
   public:
     Mediator(Fsm *fsm): m_fsm(fsm)
     {
@@ -185,24 +182,13 @@ class Mediator
 
     void SetPixel(int pixelId, int r, int g, int b)
     {
-      m_pixelColor = Color(r,g,b);
-      pixelIndex = pixelId;
       if (!socketSelected)
       {
-        m_fsm->trigger(SOCKET_EVENT);
         socketSelected = true;
+        m_fsm->trigger(SOCKET_EVENT);
       }
       if (OnSetPixel != NULL)
-        OnSetPixel();
-    }
-
-    int GetPixelId()
-    {
-      return pixelIndex;
-    }
-    uint32_t GetPixelColor()
-    {
-      return m_pixelColor;
+        OnSetPixel(pixelId, Color(r,g,b));
     }
     
   private:

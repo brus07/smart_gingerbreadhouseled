@@ -46,7 +46,7 @@ class MyWebSockerServer
               }
               break;
           case WStype_TEXT:
-              Serial.printf("[%u] get Text: %s\n", num, payload);
+              //Serial.printf("[%u] get Text: %s\n", num, payload);
               if(payload[0] == 'i') {
                   uint32_t pixelId = (uint32_t) strtol((const char *) &payload[1], NULL, 10);
                   

@@ -259,20 +259,27 @@ class NeoPatterns : public Adafruit_NeoPixel
     }
     
     // Initialize for a Fade
-    void Socket(int index, uint8_t interval)
+    void Socket()
     {
         ActivePattern = SOCKET;
-        Interval = interval;
-        Index = index;
+        Interval = 1000;
+        Index = 0;
         Direction = NONE;
         OnComplete = NULL;
     }
-    
-    // Update the Fade Pattern
-    void SocketUpdate()
+
+    uint32_t colors[12];
+    int localSteps = 0;
+    void SocketUpdate(int index, uint32_t color)
     {
-        setPixelColor(Index, Color1);
-        show();
+       colors[index] = color;
+       setPixelColor(index, color);
+       localSteps++;
+       if (localSteps == 12)
+       {
+         show();
+         localSteps = 0;
+       }
     }
     
     // Calculate 50% dimmed version of a color (used by ScannerUpdate)
